@@ -22,17 +22,3 @@ Bienvenue sur le dépôt du site web du restaurant **Le Gourmet**. Il s'agit d'u
 * **JavaScript (Vanilla)** - Gestion de l'interactivité des onglets du menu
 
 ---
-
-## 🚀 Démo en ligne
-
-👉 **[Cliquez ici pour voir le site en direct](https://VOTRE-PSEUDO.github.io/NOM-DE-VOTRE-DEPOT/)**
-
-*(Pensez à remplacer le lien ci-dessus par votre lien GitHub Pages une fois activé !)*
-
----
-
-## 💻 Installation & Utilisation en local
-
-1. Clonez ce dépôt sur votre machine :
-   ```bash
-   git clone [https://github.com/VOTRE-PSEUDO/NOM-DE-VOTRE-DEPOT.git](https://github.com/VOTRE-PSEUDO/NOM-DE-VOTRE-DEPOT.git)
