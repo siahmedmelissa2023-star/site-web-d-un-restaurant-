@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Le Gourmet - Restaurant, Carte & Réservation</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: #0b1120;
+            color: #f1f5f9;
+            line-height: 1.6;
+        }
+
+        /* Navigation Sticky Bar */
+        header {
+            background-color: #1e293b;
+            padding: 1.2rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #334155;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+        }
+
+        .logo {
+            font-size: 1.7rem;
+            font-weight: bold;
+            color: #f59e0b;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        nav a {
+            color: #cbd5e1;
+            text-decoration: none;
+            margin-left: 1.5rem;
+            font-weight: 600;
+            transition: color 0.2s;
+        }
+
+        nav a:hover {
+            color: #f59e0b;
+        }
+
+        /* Hero Banner */
+        .hero {
+            text-align: center;
+            padding: 5rem 2rem;
+            background: linear-gradient(rgba(11, 17, 32, 0.85), rgba(11, 17, 32, 0.98)), 
+                        url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1600&q=80');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: #ffffff;
+            font-weight: 800;
+        }
+
+        .hero p {
+            color: #cbd5e1;
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 3rem 1.5rem;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.2rem;
+            margin-bottom: 2rem;
+            color: #f59e0b;
+        }
+
+        /* Category Grid Cards */
+        .category-selector-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3.5rem;
+        }
+
+        .category-card {
+            background-color: #1e293b;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 2px solid #334155;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+        }
+
+        .category-card:hover {
+            transform: translateY(-8px);
+            border-color: #f59e0b;
+            box-shadow: 0 20px 25px -5px rgba(245, 158, 11, 0.25);
+        }
+
+        .category-card.active {
+            border-color: #f59e0b;
+            background-color: #26334d;
+        }
+
+        .category-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .category-card-content {
+            padding: 1.2rem;
+            text-align: center;
+        }
+
+        .category-card-content h3 {
+            color: #ffffff;
+            font-size: 1.4rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .category-card-content p {
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+
+        /* Zone d'affichage dynamique du Menu */
+        .menu-display-section {
+            background-color: #172136;
+            border-radius: 20px;
+            padding: 2.5rem;
+            border: 1px solid #334155;
+            margin-bottom: 4rem;
+        }
+
+        .menu-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid #334155;
+            padding-bottom: 1rem;
+        }
+
+        .menu-header h2 {
+            font-size: 2rem;
+            color: #f59e0b;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 2rem;
+        }
+
+        .food-item {
+            background-color: #1e293b;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #334155;
+            transition: transform 0.2s;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .food-item:hover {
+            transform: translateY(-4px);
+            border-color: #475569;
+        }
+
+        .food-item img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .food-details {
+            padding: 1.3rem;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            justify-content: space-between;
+        }
+
+        .food-title-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.6rem;
+        }
+
+        .food-title-row h4 {
+            color: #ffffff;
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+
+        .price-tag {
+            background-color: #f59e0b;
+            color: #0f172a;
+            padding: 0.3rem 0.7rem;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.95rem;
+            white-space: nowrap;
+        }
+
+        .food-desc {
+            color: #94a3b8;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        /* Onglets JavaScript */
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Formulaires & Infos */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .box {
+            background-color: #1e293b;
+            padding: 2.2rem;
+            border-radius: 16px;
+            border: 1px solid #334155;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.2);
+        }
+
+        .box h3 {
+            color: #f59e0b;
+            margin-bottom: 1.5rem;
+            font-size: 1.4rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+
+        label {
+            display: block;
+            font-size: 0.88rem;
+            margin-bottom: 0.4rem;
+            color: #cbd5e1;
+            font-weight: 500;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border-radius: 8px;
+            border: 1px solid #475569;
+            background-color: #0f172a;
+            color: #fff;
+            font-size: 0.95rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        textarea {
+            resize: vertical;
+            height: 110px;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: #f59e0b;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 0.9rem;
+            background-color: #d97706;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-submit:hover {
+            background-color: #b45309;
+        }
+
+        .info-item {
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 1.2rem;
+        }
+
+        .info-icon {
+            font-size: 1.6rem;
+            background-color: #0f172a;
+            padding: 0.6rem;
+            border-radius: 10px;
+            border: 1px solid #334155;
+        }
+
+        .info-text h4 {
+            color: #ffffff;
+            margin-bottom: 0.2rem;
+        }
+
+        .info-text p {
+            color: #94a3b8;
+            font-size: 0.95rem;
+        }
+
+        .security-badge {
+            margin-top: 2rem;
+            padding: 0.8rem;
+            background-color: #0f172a;
+            border-radius: 8px;
+            border-left: 4px solid #10b981;
+            font-size: 0.8rem;
+            color: #10b981;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: #64748b;
+            font-size: 0.9rem;
+            border-top: 1px solid #1e293b;
+            margin-top: 3rem;
+            background-color: #0f172a;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Barres de navigation -->
+    <header>
+        <div class="logo">🍽️ Le Gourmet</div>
+        <nav>
+            <a href="#menu-interactive">La Carte</a>
+            <a href="#reservation">Réservation</a>
+            <a href="#contact">Contact</a>
+            <a href="#adresse">Adresse</a>
+        </nav>
+    </header>
+
+    <!-- En-tête / Hero -->
+    <div class="hero">
+        <h1>Restaurant Gastronomique Le Gourmet</h1>
+        <p>Une expérience culinaire d'exception au cœur de Paris. Découvrez nos créations faites maison, nos grands crus et nos spécialités.</p>
+    </div>
+
+    <div class="container">
+
+        <h2 id="menu-interactive" class="section-title">Explorez Notre Carte</h2>
+        <p style="text-align: center; color: #94a3b8; margin-top: -1.5rem; margin-bottom: 2.5rem;">
+            Cliquez sur l'une des 4 catégories ci-dessous pour afficher toutes les propositions correspondantes :
+        </p>
+
+        <!-- 4 CATEGORIES DU MENU -->
+        <div class="category-selector-grid">
+            
+            <div class="category-card active" onclick="showCategory('entrees', this)">
+                <img src="https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=600&q=80" alt="Entrées">
+                <div class="category-card-content">
+                    <h3>🥗 Entrées</h3>
+                    <p>7 propositions gourmandes</p>
+                </div>
+            </div>
+
+            <div class="category-card" onclick="showCategory('plats', this)">
+                <img src="https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=600&q=80" alt="Plats">
+                <div class="category-card-content">
+                    <h3>🥩 Plats Principaux</h3>
+                    <p>7 spécialités du Chef</p>
+                </div>
+            </div>
+
+            <div class="category-card" onclick="showCategory('boissons', this)">
+                <img src="https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?auto=format&fit=crop&w=600&q=80" alt="Boissons">
+                <div class="category-card-content">
+                    <h3>🍷 Boissons</h3>
+                    <p>7 choix (Chaud, Frais, Alcool, Vin, Bière)</p>
+                </div>
+            </div>
+
+            <div class="category-card" onclick="showCategory('desserts', this)">
+                <img src="https://images.unsplash.com/photo-1606313564200-e75d5e30476c?auto=format&fit=crop&w=600&q=80" alt="Desserts">
+                <div class="category-card-content">
+                    <h3>🍰 Desserts</h3>
+                    <p>7 douceurs sucrées</p>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ZONE D'AFFICHAGE DU MENU DYNAMIQUE -->
+        <div class="menu-display-section">
+
+            <!-- 1. CATEGORIE ENTRÉES -->
+            <div id="entrees" class="tab-content active">
+                <div class="menu-header">
+                    <h2>🥗 Nos Entrées Réconfortantes & Raffinées</h2>
+                </div>
+                <div class="menu-grid">
+                    
+                    <div class="food-item">
+                        <img src="https://images.unsplash.com/photo-1592417817098-8f3d691a4bf5?auto=format&fit=crop&w=600&q=80" alt="Burrata & Tomates Bio">                        <div class="food-details">
+                            <div class="food-title-row">
+                                <h4>Burrata & Tomates Bio</h4>
+                                <span class="price-tag">14 €</span>
+                            </div>
+                            <p class="food-desc">Burrata creamy des Pouilles, tomates anciennes, pesto de basilic maison et réduction de vinaigre balsamique.</p>
+                        </div>
+                    </div>
+
+                    <div class="food-item">
+                        <img src="https://images.unsplash.com/photo-1476718406336-bb5a9690ee2a?auto=format&fit=crop&w=600&q=80" alt="Velouté">
+                        <div class="food-details">
+                            <div class="food-title-row">
+                                <h4>Velouté de Potimarron</h4>
+                                <span class="price-tag">11 €</span>
+                            </div>
+                            <p class="food-desc">Soupe onctueuse de potimarron bio, crème d'Isigny, noisettes torréfiées et croûtons à l'ail.</p>
+                        </div>
+                    </div>
+
+                    <div class="food-item">
+                        <img src="https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?auto=format&fit=crop&w=600&q=80" alt="Tartare de Saumon & Avocat">                        <div class="food-details">
+                            <div class="food-title-row">
+                                <h4>Tartare de Saumon & Avocat</h4>
+                                <span class="price-tag">16 €</span>
+                            </div>
+                            <p class="food-desc">Saumon frais découpé au couteau, mangue, avocat, zeste de citron vert et baies roses.</p>
+                        </div>
+                    </div>
+
+                    <div class="food-item">
+                        <img src="https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=600&q=80" alt="Foie Gras Poêlé & Figue">                        <div class="food-details">
+                            <div class="food-title-row">
+                                <h4>Foie Gras Poêlé & Figue</h4>
+                                <span class="price-tag">19 €</span>
+                            </div>
+                            <p class="food-desc">Foie gras de canard français snacké, chutney de figues fraîches et pain brioché toasté.</p>
+                        </div>
+                    </div>
+
+                    <div class="food-item">
+                        <img src="https://images.unsplash.com/photo-1550304943-4f24f54ddde9?auto=format&fit=crop&w=600&q=80" alt="Salade César">                        <div class="food-details">
+                            <div class="food-title-row">
+                                <h4>Salade César Gourmande</h4>
+                                <span class="price-tag">13 €</span>
+                            </div>
+                            <p class="food-desc">Cœur de romaine, poulet fermier grillé, copeaux de parmesan 24 mois et sauce César maison.</p>
+                        </div>
+                    </div>
+
+                    <div class="food-item">
+                        <img src="https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=600&q=80" alt="Carpaccio de Bœuf Charolais">                        <div class="food-details">
+                            <div class="food-title-row">
+                                <h4>Carpaccio de Bœuf Charolais</h4>
+                                <span class="price-tag">15 €</span>
+                            </div>
+                            <p class="food-desc">Fines tranches de bœuf Charolais, câpres, huile d'olive vierge et pignons de pin.</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- 2. CATEGORIE PLATS -->
+            <div id="plats" class="tab-content">
+                <div class="menu-header">
+                    <h2>🥩 Nos Plats Principaux d'Exception</h2>
+                </div>
+                <div class="menu-grid">
+
+                    <div class="food-item">
+                        <img src="https://images.unsplash.com/photo-1558030006-450675393462?auto=format&fit=crop&w=600&q=80" alt="Côte de Bœuf Maturée">                        <div class="food-details">
+                            <div class="food-title-row">
+                                <h4>Côte de Bœuf Maturée</h4>
+                                <span class="price-tag">34 €</span>
+                            </div>
+                            <p class="food-desc">Viande grillée au feu de bois, accompagnée de frites fraîches maison et sauce au poivre vert.</p>
+                        </div>
+                    </div>
+
+                    <div class="food-item">
+                        <img src="https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=600&q=80" alt="Saumon">
+                        <div class="food-details">
+                            <div class="food-title-row">
+                                <h4>Pavé de Saumon Rôti</h4>
+                                <span class="price-tag">26 €</span>
+                            </div>
+                            <p class="food-desc">Saumon atlantique poêlé sur peau, fondue de poireaux à la crème et émulsion d'agrumes.</p>
+                        </div>
+                    </div>
+
+                    <div class="food-item">
+                        <img src="https://images.unsplash.com/photo-1608897013039-887f21d8c804?auto=format&fit=crop&w=600&q=80" alt="Pâtes fraîches à la Truffe">                        <div class="food-details">
+                            <div class="food-title-row">
+                                <h4>Pâtes fraîches à la Truffe</h4>
+                                <span class="price-tag">28 €</span>
+                            </div>
+                            <p class="food-desc">Tagliatelles artisanales, crème de parmesan Réggiano et copeaux généreux de truffe noire d'été.</p>
+                        </div>
+                    </div>
+
+                    <div class="food-item">
+                        <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=600&q=80" alt="Burger Gourmet & Reblochon">                        <div class="food-details">
+                            <div class="food-title-row">
+                                <h4>Burger Gourmet & Reblochon</h4>
+                                <span class="price-tag">22 €</span>
+                            </div>
+                            <p class="food-desc">Steak haché de bœuf 200g, Reblochon AOP fondu, oignons confits, bacon grillé et bun artisanal.</p>
+                        </div>
+                    </div>
+
+                    <div class="food-item">
+                        <img src="https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=600&q=80" alt="Magret de Canard au Miel">                            <div class="food-title-row">
+                                <h4>Magret de Canard au Miel</h4>
+                                <span class="price-tag">27 €</span>
+                            </div>
+                            <p class="food-desc">Magret du Sud-Ouest rôti rose, sauce au miel de montagne, romarin et purée de patates douces.</p>
+                        </div>
+                    </div>
+                   
+
+                </div>
+            </div>
+
+            <!-- 3. CATEGORIE BOISSONS -->
+            <div id="boissons" class="tab-content">
+                <div class="menu-header">
+                    <h2>🍷 Nos Boissons (Vins, Bières, Alcools, Jus & Boissons Chaudes)</h2>
+                </div>
+                <div class="menu-grid">
+
+                    <div class="food-item">
+                        <img src="https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?auto=format&fit=crop&w=600&q=80" alt="Bordeaux Grand Cru">                        <div class="food-details">
+                            <div class="food-title-row">
+                                <h4>🍷 Bordeaux Grand Cru (Bouteille)</h4>
+                                <span class="price-tag">45 €</span>
+                            </div>
+                            <p class="food-desc">Saint-Émilion Grand Cru 2018. Notes boisées, mûres et épices douces. Idéal avec nos viandes.</p>
+                        </div>
+                    </div>
+
+                    <div class="food-item">
+                        <img src="https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?auto=format&fit=crop&w=600&q=80" alt="Cocktail Alcoolisé Signature">                        <div class="food-details">
+                            <div class="food-title-row">
+                                <h4>🍸 Cocktail Alcoolisé Signature</h4>
+                                <span class="price-tag">13 €</span>
+                            </div>
+                            <p class="food-desc">Gin d'Isigny, liqueur de fleur de sureau, jus de yuzu pressé, romarin et eau pétillante tonic.</p>
+                        </div>
+                    </div>
+
+                    <div class="food-item">
+                        <img src="https://images.unsplash.com/photo-1608270586620-248524c67de9?auto=format&fit=crop&w=600&q=80" alt="Bière Pression">
+                        <div class="food-details">
+                            <div class="food-title-row">
+                                <h4>🍺 Bière Artisanale Pression (50cl)</h4>
+                                <span class="price-tag">8 €</span>
+                            </div>
+                            <p class="food-desc">Bière IPA locale aux notes d'agrumes et à l'amertume équilibrée. Brassée en Île-de-France.</p>
+                        </div>
+                    </div>
+
+                    <div class="food-item">
+                        <img src="https://images.unsplash.com/photo-1613478223719-2ab802602423?auto=format&fit=crop&w=600&q=80" alt="Jus Pressé Frais Minute">                        <div class="food-details">
+                            <div class="food-title-row">
+                                <h4>🍹 Jus Pressé Frais Minute</h4>
+                                <span class="price-tag">6.50 €</span>
+                            </div>
+                            <p class="food-desc">Mélange rafraîchissant pressé à froid : Pomme bio, gingembre, menthe fraîche et citron vert.</p>
+                        </div>
+                    </div>
+
+                    <div class="food-item">
+                        <img src="https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=600&q=80" alt="Café Espresso">
+                        <div class="food-details">
+                            <div class="food-title-row">
+                                <h4>☕ Café Espresso & Cappuccino</h4>
+                                <span class="price-tag">3.50 €</span>
+                            </div>
+                            <p class="food-desc">Grand cru d'Éthiopie 100% Arabica torréfié artisanalement. Option lait d'avoine ou crème d'Isigny.</p>
+                        </div>
+                    </div>
+
+                    <div class="food-item">
+                        <img src="https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&w=600&q=80" alt="Thé Chaud">
+                        <div class="food-details">
+                            <div class="food-title-row">
+                                <h4>🫖 Thé Chaud & Infusion Bio</h4>
+                                <span class="price-tag">4.50 €</span>
+                            </div>
+                            <p class="food-desc">Large sélection de thés verts Earl Grey, Menthe fraîche, Camomille ou Rooibos parfumé.</p>
+                        </div>
+                    </div>
+
+                    <div class="food-item">
+                    <img src="https://images.unsplash.com/photo-1548839140-29a749e1cf4d?auto=format&fit=crop&w=600&q=80" alt="Eau Minérale & Pétillante">                        <div class="food-details">
+                            <div class="food-title-row">
+                                <h4>💧 Eau Minérale & Pétillante (75cl)</h4>
+                                <span class="price-tag">5 €</span>
+                            </div>
+                            <p class="food-desc">Bouteille en verre au choix : Eau minérale plate Evian ou eau pétillante San Pellegrino.</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- 4. CATEGORIE DESSERTS -->
+            <div id="desserts" class="tab-content">
+                <div class="menu-header">
+                    <h2>🍰 Nos Desserts & Douceurs Sucrées</h2>
+                </div>
+                <div class="menu-grid">
+
+                    <div class="food-item">
+                        <img src="https://images.unsplash.com/photo-1606313564200-e75d5e30476c?auto=format&fit=crop&w=600&q=80" alt="Fondant Chocolat">
+                        <div class="food-details">
+                            <div class="food-title-row">
+                                <h4>Fondant Chocolat Valrhona</h4>
+                                <span class="price-tag">11 €</span>
+                            </div>
+                            <p class="food-desc">Cœur coulant intense au chocolat noir 70%, servi avec une boule de glace vanille Bourbon de Madagascar.</p>
+                        </div>
+                    </div>
+
+                    <div class="food-item">
+                        <img src="https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?auto=format&fit=crop&w=600&q=80" alt="Tiramisu Café Traditionnel">                        <div class="food-details">
+                            <div class="food-title-row">
+                                <h4>Tiramisu Café Traditionnel</h4>
+                                <span class="price-tag">9.50 €</span>
+                            </div>
+                            <p class="food-desc">Biscuit cuillère imbibé d'espresso, mascarpone fouetté, amaretto et cacao amer saupoudré.</p>
+                        </div>
+                    </div>
+
+                    <div class="food-item">
+                        <img src="https://images.unsplash.com/photo-1519869325930-281384150729?auto=format&fit=crop&w=600&q=80" alt="Tarte Citron Meringuée">                        <div class="food-details">
+                            <div class="food-title-row">
+                                <h4>Tarte Citron Meringuée</h4>
+                                <span class="price-tag">10 €</span>
+                            </div>
+                            <p class="food-desc">Pâte sablée pur beurre, crémeux au citron jaune acidulé et meringue italienne dorée au chalumeau.</p>
+                        </div>
+                    </div>
+
+                    <div class="food-item">
+                        <img src="https://images.unsplash.com/photo-1470124182917-cc6e71b22ecc?auto=format&fit=crop&w=600&q=80" alt="Crème Brûlée Vanille Bourbon">                        <div class="food-details">
+                            <div class="food-title-row">
+                                <h4>Crème Brûlée Vanille Bourbon</h4>
+                                <span class="price-tag">9 €</span>
+                            </div>
+                            <p class="food-desc">Crème onctueuse à la vanille naturelle, caramélisée à la cassonade croquante minute.</p>
+                        </div>
+                    </div>
+
+                    <div class="food-item">
+                        <img src="https://images.unsplash.com/photo-1565958011703-44f9829ba187?auto=format&fit=crop&w=600&q=80" alt="Cheesecake">
+                        <div class="food-details">
+                            <div class="food-title-row">
+                                <h4>Cheesecake aux Fruits Rouges</h4>
+                                <span class="price-tag">10.50 €</span>
+                            </div>
+                            <p class="food-desc">Recette new-yorkaise onctueuse sur biscuit speculoos, coulis de framboises fraîches.</p>
+                        </div>
+                    </div>
+
+                    <div class="food-item">
+                        <img src="https://images.unsplash.com/photo-1570197788417-0e82375c9371?auto=format&fit=crop&w=600&q=80" alt="Glace">
+                        <div class="food-details">
+                            <div class="food-title-row">
+                                <h4>Coupe de Glaces Artisanales (3 boules)</h4>
+                                <span class="price-tag">8.50 €</span>
+                            </div>
+                            <p class="food-desc">Parfums au choix : Vanille, Chocolat noir, Pistache de Sicile, Fraise de saison ou Citron vert.</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+        <!-- SECTIONS FORMULAIRES & INFORMATIONS -->
+        <div class="grid-2">
+            
+            <!-- Formulaire de Réservation -->
+            <div class="box" id="reservation">
+                <h3>📅 Réserver une Table</h3>
+                <form onsubmit="event.preventDefault(); alert('Votre demande de réservation a été envoyée avec succès !');">
+                    <div class="form-group">
+                        <label for="res-name">Nom complet</label>
+                        <input type="text" id="res-name" placeholder="Ex: Jean Dupont" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="res-phone">Numéro de téléphone</label>
+                        <input type="tel" id="res-phone" placeholder="Ex: 06 12 34 56 78" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="res-guests">Nombre de personnes</label>
+                        <select id="res-guests" required>
+                            <option value="1">1 personne</option>
+                            <option value="2" selected>2 personnes</option>
+                            <option value="4">4 personnes</option>
+                            <option value="6">6 personnes et +</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="res-date">Date & Heure</label>
+                        <input type="datetime-local" id="res-date" required>
+                    </div>
+                    <button type="submit" class="btn-submit">Confirmer la Réservation</button>
+                </form>
+            </div>
+
+            <!-- Informations Pratiques & Contact -->
+            <div class="box" id="adresse">
+                <h3>📍 Informations & Accès</h3>
+                
+                <div class="info-item">
+                    <div class="info-icon">📍</div>
+                    <div class="info-text">
+                        <h4>Adresse</h4>
+                        <p>15 Rue de la Gastronomie, 75001 Paris, France</p>
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-icon">🕒</div>
+                    <div class="info-text">
+                        <h4>Horaires d'ouverture</h4>
+                        <p>Mardi - Dimanche : 12h00 - 14h30 & 19h00 - 23h00<br>Fermé le Lundi</p>
+                    </div>
+                </div>
+
+                <div class="info-item" id="contact">
+                    <div class="info-icon">📞</div>
+                    <div class="info-text">
+                        <h4>Contact Direct</h4>
+                        <p>Téléphone : +33 1 42 68 00 00<br>Email : contact@legourmet-restaurant.fr</p>
+                    </div>
+                </div>
+
+                <div class="security-badge">
+                    ✔️ Produits 100% Frais & Fait Maison
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Pied de page -->
+    <footer>
+        <p>&copy; Le Gourmet Restaurant - Tous droits réservés.</p>
+    </footer>
+
+    <!-- Logique JavaScript pour le changement dynamique des onglets du menu -->
+    <script>
+        function showCategory(categoryId, element) {
+            // Masquer toutes les sections de menu
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(content => content.classList.remove('active'));
+
+            // Retirer la classe 'active' de toutes les cartes d'entrée
+            const cards = document.querySelectorAll('.category-card');
+            cards.forEach(card => card.classList.remove('active'));
+
+            // Afficher la catégorie sélectionnée
+            document.getElementById(categoryId).classList.add('active');
+
+            // Mettre en valeur la carte cliquée
+            element.classList.add('active');
+        }
+    </script>
+
+</body>
+</html>
